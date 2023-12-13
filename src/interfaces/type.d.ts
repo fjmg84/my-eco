@@ -8,3 +8,9 @@ export interface ItemsProps {
   products: Products[]
   amount: number
 }
+
+export interface RootStackParamList {
+  [key: string]: undefined
+  Home: undefined
+  Details: { id: string | null }
+}

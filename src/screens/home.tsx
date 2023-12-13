@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { getFirestore, collection, getDocs, setDoc, doc, addDoc } from 'firebase/firestore'
-import { StyleSheet, Text, Pressable, View, Alert } from 'react-native'
+import { StyleSheet, View, Alert } from 'react-native'
+
+import { collection, getDocs } from 'firebase/firestore'
 import ItemsLink from '../components/list-items-link'
-import firebase from '../firebase/config'
-import { DATA_SEEK } from '../interfaces/contants'
+import { db } from '../firebase/connection-db'
 
 export default function HomeScreen () {
   const [items, setItems] = useState<string[]>([])
-  // const [collectionSelected, setCollectionSelected] = useState(null)
-  const db = getFirestore(firebase)
-  const today = new Date()
-  const nameSubCollection = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`
 
   useEffect(() => {
     listDateCollection()
@@ -30,26 +26,20 @@ export default function HomeScreen () {
       })
   }
 
-  /* const getItemsCollection = async ({ subCollection }: { subCollection: string }) => {
-    const collectionRef = collection(db, 'shopping-cart', subCollection, 'items')
-    const querySnapshot = await getDocs(collectionRef)
-    console.log(querySnapshot)
-  } */
+  /*
+    const today = new Date()
+    const nameSubCollection = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`
 
-  const setItemCollection = ({ nameSubCollection }: { nameSubCollection: string }) => async () => {
+    const setItemCollection = ({ nameSubCollection }: { nameSubCollection: string }) => async () => {
     const docRef = doc(db, 'shopping-cart', nameSubCollection)
     await setDoc(docRef, {})
     await addDoc(collection(db, 'shopping-cart', nameSubCollection, 'items'), DATA_SEEK)
-  }
+  } */
 
   return (
 
     <View style={styles.container}>
       <StatusBar style="auto" />
-
-      <Pressable onPress={setItemCollection({ nameSubCollection })}>
-        <Text>save</Text>
-      </Pressable>
 
       <ItemsLink items={items}/>
 

@@ -1,7 +1,7 @@
-import HomeScreen from './src/screens/home'
+import RouterComponent from './src/components/custom-router'
 
 export default function App () {
   return (
-    <HomeScreen/>
+   <RouterComponent/>
   )
 }

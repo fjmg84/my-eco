@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text, FlatList } from 'react-native'
+import { Link } from '@react-navigation/native'
+import { StyleSheet, View, FlatList, Text } from 'react-native'
 
 interface ItemsLinkProps {
   items: string[]
@@ -10,9 +11,14 @@ export default function ListItemsLink ({ items }: ItemsLinkProps) {
       <FlatList
         data={items}
         renderItem={({ item }) =>
-          <View style={styles.link}>
-            <Text style={styles.text}>{item}</Text>
-          </View>
+          <Link to={{
+            screen: 'Details',
+            params: { id: item }
+          }}>
+            <View style={styles.link}>
+              <Text style={styles.text}>{item}</Text>
+            </View>
+          </Link>
       }
       />
     </View>
