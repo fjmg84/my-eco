@@ -1,7 +1,7 @@
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { db } from '../firebase/connection-db'
 import { DATA_SEEK } from '../interfaces/contants'
-import { Pressable, View } from 'react-native'
+import { Pressable, View, Text } from 'react-native'
 
 export default function CreateScreen () {
   const today = new Date()
@@ -15,7 +15,9 @@ export default function CreateScreen () {
 
   return (
         <View>
-            <Pressable onPress={setItemCollection({ nameSubCollection })}>Create new data</Pressable>
+            <Pressable onPress={setItemCollection({ nameSubCollection })}>
+              <Text>Create new data</Text>
+            </Pressable>
         </View>
   )
 }

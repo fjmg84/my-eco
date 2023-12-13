@@ -7,6 +7,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export default function HomeScreen ({ navigation }: Props) {
   return (
         <View style={styles.container}>
+          <Pressable onPress={() => {
+            navigation.navigate('Create')
+          }}>
+                <Text style={styles.btn}>Create Dates</Text>
+            </Pressable>
+
             <Pressable onPress={() => {
               navigation.navigate('ListDates')
             }}>
