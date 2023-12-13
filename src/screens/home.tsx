@@ -1,58 +1,31 @@
-import { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, View, Alert } from 'react-native'
+import { type NativeStackScreenProps } from '@react-navigation/native-stack'
+import { Pressable, View, Text, StyleSheet } from 'react-native'
+import { type RootStackParamList } from '../interfaces/type'
+import { theme } from '../interfaces/contants'
 
-import { collection, getDocs } from 'firebase/firestore'
-import ItemsLink from '../components/list-items-link'
-import { db } from '../firebase/connection-db'
-
-export default function HomeScreen () {
-  const [items, setItems] = useState<string[]>([])
-
-  useEffect(() => {
-    listDateCollection()
-  }, [])
-
-  const listDateCollection = () => {
-    const collectionRef = collection(db, 'shopping-cart')
-    getDocs(collectionRef)
-      .then((response) => {
-        response.forEach((docs) => {
-          setItems(prev => [...prev, docs.id])
-        })
-      })
-      .catch((error) => {
-        Alert.alert(error as string)
-      })
-  }
-
-  /*
-    const today = new Date()
-    const nameSubCollection = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`
-
-    const setItemCollection = ({ nameSubCollection }: { nameSubCollection: string }) => async () => {
-    const docRef = doc(db, 'shopping-cart', nameSubCollection)
-    await setDoc(docRef, {})
-    await addDoc(collection(db, 'shopping-cart', nameSubCollection, 'items'), DATA_SEEK)
-  } */
-
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
+export default function HomeScreen ({ navigation }: Props) {
   return (
-
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-
-      <ItemsLink items={items}/>
-
-    </View>
+        <View style={styles.container}>
+            <Pressable onPress={() => {
+              navigation.navigate('ListDates')
+            }}>
+                <Text style={styles.btn}>List Dates</Text>
+            </Pressable>
+        </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'center'
+  },
+  btn: {
+    backgroundColor: theme.colors.primary,
+    fontSize: theme.fontsSize.body,
+    color: 'white',
+    padding: 10
   }
-
 })

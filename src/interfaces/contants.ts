@@ -6,3 +6,12 @@ export const DATA_SEEK = {
   }],
   amount: 10.99
 }
+
+export const theme = {
+  colors: {
+    primary: 'rgb(54 83 20)'
+  },
+  fontsSize: {
+    body: 16
+  }
+}

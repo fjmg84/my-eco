@@ -1,5 +1,6 @@
 import { Link } from '@react-navigation/native'
 import { StyleSheet, View, FlatList, Text } from 'react-native'
+import { theme } from '../interfaces/contants'
 
 interface ItemsLinkProps {
   items: string[]
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   link: {
-    backgroundColor: 'rgb(54 83 20)',
+    backgroundColor: theme.colors.primary,
     width: '100%',
     padding: 20,
     alignItems: 'center',
@@ -38,6 +39,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 16
+    fontSize: theme.fontsSize.body
   }
 })

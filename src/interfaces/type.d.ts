@@ -12,5 +12,7 @@ export interface ItemsProps {
 export interface RootStackParamList {
   [key: string]: undefined
   Home: undefined
+  ListDates: undefined
   Details: { id: string | null }
+
 }
