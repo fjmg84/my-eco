@@ -5,7 +5,7 @@ import { Pressable, View, Text } from 'react-native'
 
 export default function CreateScreen () {
   const today = new Date()
-  const nameSubCollection = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`
+  const nameSubCollection = `${today.getMonth()}-${today.getDate()}-${today.getFullYear()}`
 
   const setItemCollection = ({ nameSubCollection }: { nameSubCollection: string }) => async () => {
     const docRef = doc(db, 'shopping-cart', nameSubCollection)

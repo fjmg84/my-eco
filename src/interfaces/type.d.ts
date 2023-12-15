@@ -17,3 +17,7 @@ export interface RootStackParamList {
   Details: { id: string | null }
 
 }
+
+export interface ListItemsProps {
+  [key: string]: ItemsProps[]
+}

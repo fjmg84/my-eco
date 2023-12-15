@@ -1,17 +1,28 @@
 export const DATA_SEEK = {
   date: new Date().getTime(),
   products: [{
-    name: 'teste',
-    price: 12.99
+    name: 'leche',
+    price: 1.19
+  }, {
+    name: 'pan',
+    price: 1.15
+  }, {
+    name: 'carne',
+    price: 5.75
   }],
-  amount: 10.99
+  amount: 0.00
 }
 
 export const theme = {
   colors: {
-    primary: 'rgb(54 83 20)'
+    primary: '#073b4c',
+    secondary: '#118ab2',
+    green: '#06d6a0',
+    yellow: '#ffd166',
+    red: '#ef476f'
   },
   fontsSize: {
-    body: 16
+    body: 16,
+    text: 14
   }
 }

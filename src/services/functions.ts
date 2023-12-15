@@ -7,3 +7,12 @@ export const orderArray = ({ arr = [], camp, type = '<' }: { arr: any[], camp?: 
     }
   })
 }
+
+export const groupBy = ({ array = [], property = '' }: { array: any[], property: string }) => {
+  return array.reduce((acc, obj) => {
+    const key = obj[property]
+    const curGroup = acc[key] ?? []
+
+    return { ...acc, [key]: [...curGroup, obj] }
+  }, {})
+}

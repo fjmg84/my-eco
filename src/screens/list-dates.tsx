@@ -5,6 +5,7 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { collection, getDocs } from 'firebase/firestore'
 import ItemsLink from '../components/list-items-link'
 import { db } from '../firebase/connection-db'
+import { theme } from '../interfaces/contants'
 
 export default function ListDatesScreen () {
   const [items, setItems] = useState<string[]>([])
@@ -40,9 +41,10 @@ export default function ListDatesScreen () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.yellow,
     alignItems: 'center',
     justifyContent: 'flex-start'
+
   }
 
 })

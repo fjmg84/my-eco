@@ -7,6 +7,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export default function HomeScreen ({ navigation }: Props) {
   return (
         <View style={styles.container}>
+          <View style={styles.btns}>
+
           <Pressable onPress={() => {
             navigation.navigate('Create')
           }}>
@@ -18,6 +20,7 @@ export default function HomeScreen ({ navigation }: Props) {
             }}>
                 <Text style={styles.btn}>List Dates</Text>
             </Pressable>
+              </View>
         </View>
   )
 }
@@ -25,13 +28,23 @@ export default function HomeScreen ({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: '100%',
+    backgroundColor: theme.colors.yellow
+  },
+
+  btns: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-evenly'
+
   },
   btn: {
     backgroundColor: theme.colors.primary,
     fontSize: theme.fontsSize.body,
-    color: 'white',
-    padding: 10
+    color: theme.colors.yellow,
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+    borderRadius: 50
   }
 })
