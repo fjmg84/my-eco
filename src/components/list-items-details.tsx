@@ -1,51 +1,42 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { type ItemsProps } from '../interfaces/type'
-import { theme } from '../interfaces/contants'
+import { theme } from '../interfaces/constants'
 
-export default function ListItemsDetails ({ items }: { items: ItemsProps[] }) {
+export default function ListItemsDetails ({ item }: { item: ItemsProps }) {
+  const { products } = item
   return (
-        <FlatList
-        data={items}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.table}>
-              <FlatList
-                data={item.products}
-                style={{ width: '100%' }}
-                renderItem={({ item }) => {
-                  return (
-                    <View style={styles.texts}>
-                      <View style={{
-                        flexDirection: 'row',
-                        gap: 10,
-                        padding: 10,
-                        width: '100%'
-                      }}>
-                        <Text style={styles.text}>{item.name}</Text>
-                        <Text style={styles.text}>{item.price}</Text>
-                      </View>
-                      <View style={styles.divider}/>
-                    </View>
-                  )
-                }}
-              />
-               <Text style={styles.amount}>{item.amount}</Text>
+    <View style={styles.container}>
+      {products.map((product, index) => {
+        const { name, price } = product
+        return (
+          <View key={index} style={styles.box}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                gap: 10,
+                padding: 10
+              }}
+            >
+              <Text style={styles.text}>{name}</Text>
+              <Text style={{ ...styles.text }}>{price}</Text>
             </View>
-          )
-        }}
-      />
+            <View style={styles.divider} />
+          </View>
+        )
+      })}
+      <Text style={styles.amount}>{item.amount}</Text>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-
-  table: {
+  container: {
     flexDirection: 'column',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     padding: 8,
-    borderRadius: 10,
-    width: '100%'
+    borderRadius: 10
   },
   amount: {
     color: 'white',
@@ -58,16 +49,15 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     textAlign: 'right'
   },
-  texts: {
+  box: {
     flexDirection: 'column',
-    alignItems: 'flex-end',
     width: '100%'
   },
   text: {
     color: theme.colors.primary,
     fontSize: theme.fontsSize.body,
-    textAlign: 'right',
-    width: '100%'
+    textAlign: 'right'
+
   },
   divider: {
     backgroundColor: theme.colors.secondary,

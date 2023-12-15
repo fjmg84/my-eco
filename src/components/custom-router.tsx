@@ -12,13 +12,15 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 export default function RouterComponent () {
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Details">
-          <Stack.Screen name='Home' component={HomeScreen}/>
-          <Stack.Screen name="ListDates" component={ListDatesScreen} />
-          <Stack.Screen name="Create" component={CreateScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} initialParams={{ id: '11-14-2023' }}/>
-
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="ListDates" component={ListDatesScreen} />
+        <Stack.Screen name="Create" component={CreateScreen} />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }

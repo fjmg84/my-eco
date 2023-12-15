@@ -10,7 +10,7 @@ import {
 } from '../interfaces/type'
 import { db } from '../firebase/connection-db'
 import ListItemsDetails from '../components/list-items-details'
-import { theme } from '../interfaces/contants'
+import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Details'>
@@ -44,7 +44,7 @@ export default function DetailsScreen ({ route }: Props) {
       listItems.push(doc.data() as ItemsProps)
     })
 
-    const listItemsOrderByDate = orderArray({ arr: listItems, camp: 'date' })
+    const listItemsOrderByDate = orderArray({ arr: listItems, camp: 'date', type: '>' })
     const listItemsGroupByDate: ListItemsProps = groupBy({
       array: listItemsOrderByDate,
       property: 'date'
@@ -68,7 +68,9 @@ export default function DetailsScreen ({ route }: Props) {
             return (
               <View key={index} style={styles.card}>
                 <Text style={styles.key}>{date.toLocaleString('en-US')}</Text>
-                <ListItemsDetails items={value} />
+                {
+                  value.map((item, index) => <ListItemsDetails key={index} item={item} />)
+                }
               </View>
             )
           })}
@@ -89,7 +91,8 @@ const styles = StyleSheet.create({
 
   scrollview: {
     flex: 1,
-    width: '100%'
+    width: '100%',
+    paddingHorizontal: 20
   },
 
   card: {
@@ -103,7 +106,7 @@ const styles = StyleSheet.create({
       height: 5, width: 5
     },
     shadowOpacity: 0.25,
-    width: '80%'
+    width: '100%'
   },
   key: {
     backgroundColor: theme.colors.primary,

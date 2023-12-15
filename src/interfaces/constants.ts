@@ -22,7 +22,8 @@ export const theme = {
     red: '#ef476f'
   },
   fontsSize: {
-    body: 16,
-    text: 14
+    small: 14,
+    normal: 18,
+    big: 24
   }
 }

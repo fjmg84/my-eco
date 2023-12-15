@@ -1,39 +1,61 @@
 import { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, View, Alert } from 'react-native'
+import { StyleSheet, View, Alert, FlatList } from 'react-native'
 
-import { collection, getDocs } from 'firebase/firestore'
+import {
+  type CollectionReference,
+  type DocumentData,
+  collection,
+  getDocs
+} from 'firebase/firestore'
 import ItemsLink from '../components/list-items-link'
 import { db } from '../firebase/connection-db'
-import { theme } from '../interfaces/contants'
+import { theme } from '../interfaces/constants'
+
+export interface Item {
+  item: string
+  date: string
+}
 
 export default function ListDatesScreen () {
-  const [items, setItems] = useState<string[]>([])
+  const [items, setItems] = useState<Item[]>([])
+  const collectionRef = collection(db, 'shopping-cart')
 
   useEffect(() => {
-    listDateCollection()
-  }, [])
-
-  const listDateCollection = () => {
-    const collectionRef = collection(db, 'shopping-cart')
-    getDocs(collectionRef)
+    listDateCollection({
+      collectionRef
+    })
       .then((response) => {
-        response.forEach((docs) => {
-          setItems(prev => [...prev, docs.id])
-        })
+        setItems(response)
       })
       .catch((error) => {
-        Alert.alert(error as string)
+        Alert.alert(`${error}`)
       })
+  }, [])
+
+  const listDateCollection = async ({
+    collectionRef
+  }: {
+    collectionRef: CollectionReference<DocumentData, DocumentData>
+  }) => {
+    const responseDate: Item[] = []
+    const response = await getDocs(collectionRef)
+    response.forEach((value) => {
+      const date = new Date(value.id)
+      responseDate.push({
+        item: value.id,
+        date: date.toDateString()
+      })
+    })
+    return responseDate
   }
 
   return (
-
     <View style={styles.container}>
-      <StatusBar style="auto" />
-
-      <ItemsLink items={items}/>
-
+      <FlatList
+        style={{ width: '100%' }}
+        data={items}
+        renderItem={({ item }) => <ItemsLink item={item} />}
+      />
     </View>
   )
 }
@@ -43,8 +65,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.yellow,
     alignItems: 'center',
-    justifyContent: 'flex-start'
-
+    justifyContent: 'center'
   }
-
 })

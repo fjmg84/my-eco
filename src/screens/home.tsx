@@ -1,7 +1,7 @@
 import { type NativeStackScreenProps } from '@react-navigation/native-stack'
 import { Pressable, View, Text, StyleSheet } from 'react-native'
 import { type RootStackParamList } from '../interfaces/type'
-import { theme } from '../interfaces/contants'
+import { theme } from '../interfaces/constants'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export default function HomeScreen ({ navigation }: Props) {
