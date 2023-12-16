@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { theme } from '../interfaces/constants'
 import { type Item } from '../screens/show-shopping-list'
 
-export default function ListItemsLink ({ item }: { item: Item }) {
+export default function ShoppingDateList ({ item }: { item: Item }) {
   const { item: id, date } = item
 
   return <Link

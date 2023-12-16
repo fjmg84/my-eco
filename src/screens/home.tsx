@@ -7,7 +7,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export default function HomeScreen ({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <View style={styles.box}>
+
         <Pressable
           style={styles.btn}
           onPress={() => {
@@ -23,9 +23,9 @@ export default function HomeScreen ({ navigation }: Props) {
             navigation.navigate('ShowShoppingList')
           }}
         >
-          <Text style={styles.btnText}>shopping list</Text>
+          <Text style={styles.btnText}>show shopping list</Text>
         </Pressable>
-      </View>
+
     </View>
   )
 }
@@ -36,21 +36,16 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.yellow,
     alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-  box: {
-    width: '90%',
-    flexDirection: 'column',
+    justifyContent: 'center',
     gap: 20
   },
+
   btn: {
     backgroundColor: theme.colors.primary,
-    paddingHorizontal: 40,
-    paddingVertical: 20,
-    borderRadius: 50,
+    borderRadius: 10,
     alignItems: 'center',
-    width: '100%',
+    width: '90%',
+    height: 180,
     justifyContent: 'center'
   },
   btnText: {

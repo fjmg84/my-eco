@@ -2,30 +2,32 @@ import { StyleSheet, Text, View } from 'react-native'
 import { type ItemsProps } from '../interfaces/type'
 import { theme } from '../interfaces/constants'
 
-export default function ListItemsDetails ({ item }: { item: ItemsProps }) {
-  const { products } = item
+export default function ShoppingItemsList ({ item }: { item: ItemsProps }) {
+  const { products, amount } = item
+  const amountFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
   return (
     <View style={styles.container}>
       {products.map((product, index) => {
-        const { name, price } = product
+        const { name, price, quantity } = product
+        const priceFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
         return (
           <View key={index} style={styles.box}>
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                gap: 10,
-                padding: 10
+                padding: 10,
+                gap: 5
               }}
             >
-              <Text style={styles.text}>{name}</Text>
-              <Text style={{ ...styles.text }}>{price}</Text>
+              <Text style={{ ...styles.text, width: 170, textAlign: 'left' }}>{name}</Text>
+              <Text style={{ ...styles.text, width: 20, textAlign: 'center' }}>{quantity}</Text>
+              <Text style={{ ...styles.text, width: 70, textAlign: 'right' }}>{priceFormatted}</Text>
             </View>
             <View style={styles.divider} />
           </View>
         )
       })}
-      <Text style={styles.amount}>{item.amount}</Text>
+      <Text style={styles.amount}>{amountFormatted}</Text>
     </View>
   )
 }
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: theme.colors.red,
     borderRadius: 20,
-    fontSize: theme.fontsSize.big,
+    fontSize: theme.fontsSize.normal,
     fontWeight: 'bold',
     marginVertical: 5,
     paddingHorizontal: 10,
@@ -56,12 +58,13 @@ const styles = StyleSheet.create({
   text: {
     color: theme.colors.primary,
     fontSize: theme.fontsSize.normal,
-    textAlign: 'right'
+    paddingVertical: 5
 
   },
   divider: {
     backgroundColor: theme.colors.secondary,
     height: 1,
-    width: '100%'
+    width: '100%',
+    marginBottom: 5
   }
 })

@@ -9,9 +9,9 @@ import {
   type RootStackParamList
 } from '../interfaces/type'
 import { db } from '../firebase/connection-db'
-import ListItemsDetails from '../components/list-items-details'
 import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
+import ShoppingItemsList from '../components/shopping-items-list'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailsShoppingList'>
 
@@ -69,7 +69,7 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
               <View key={index} style={styles.card}>
                 <Text style={styles.key}>{date.toLocaleString('en-US')}</Text>
                 {
-                  value.map((item, index) => <ListItemsDetails key={index} item={item} />)
+                  value.map((item, index) => <ShoppingItemsList key={index} item={item} />)
                 }
               </View>
             )
