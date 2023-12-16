@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { db } from '../firebase/connection-db'
-import { DATA_SEEK, theme } from '../interfaces/constants'
+import { theme } from '../interfaces/constants'
 import {
   Pressable,
   ScrollView,

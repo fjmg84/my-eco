@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: theme.colors.primary,
-    fontSize: theme.fontsSize.body,
+    fontSize: theme.fontsSize.big,
     color: theme.colors.yellow,
     paddingHorizontal: 40,
     paddingVertical: 20,

@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     borderRadius: 50,
     color: 'white',
-    fontSize: theme.fontsSize.text,
+    fontSize: theme.fontsSize.small,
     paddingLeft: 10,
     paddingVertical: 5
   }

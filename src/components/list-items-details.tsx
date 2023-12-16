@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: theme.colors.red,
     borderRadius: 20,
-    fontSize: theme.fontsSize.body,
+    fontSize: theme.fontsSize.big,
     fontWeight: 'bold',
     marginVertical: 5,
     paddingHorizontal: 10,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: theme.colors.primary,
-    fontSize: theme.fontsSize.body,
+    fontSize: theme.fontsSize.normal,
     textAlign: 'right'
 
   },

@@ -32,11 +32,10 @@ const styles = StyleSheet.create({
   text: {
 
     color: theme.colors.yellow,
-    fontSize: theme.fontsSize.body
+    fontSize: theme.fontsSize.normal
   },
   subtext: {
-
     color: theme.colors.red,
-    fontSize: theme.fontsSize.text
+    fontSize: theme.fontsSize.small
   }
 })
