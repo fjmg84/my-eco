@@ -12,6 +12,7 @@ import { db } from '../firebase/connection-db'
 import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
 import ShoppingItemsList from '../components/shopping-items-list'
+import { CircleSnail } from 'react-native-progress'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailsShoppingList'>
 
@@ -62,18 +63,34 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
          alignItems: 'center',
          gap: 10
        }}>
-         {Object.keys(items).length > 0 &&
-          Object.entries(items).map(([key, value], index) => {
-            const date = new Date(Number(key))
-            return (
+         {Object.keys(items).length > 0
+           ? Object.entries(items).map(([key, value], index) => {
+             const date = new Date(Number(key))
+             return (
               <View key={index} style={styles.card}>
-                <Text style={styles.key}>{date.toLocaleString('en-US')}</Text>
+                <View style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: theme.colors.primary,
+                  paddingVertical: 10
+                }}>
+                  <Text style={styles.key}>{date.toLocaleString('en-US')}</Text>
+                  </View>
                 {
                   value.map((item, index) => <ShoppingItemsList key={index} item={item} />)
                 }
               </View>
-            )
-          })}
+             )
+           })
+           : <CircleSnail
+          thickness={7}
+          size={90}
+          indeterminate={true}
+          color={[
+            theme.colors.primary,
+            theme.colors.secondary
+          ]}/>
+          }
        </View>
       </ScrollView>
     </View>
@@ -85,21 +102,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.yellow,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingVertical: 10
+    justifyContent: 'center'
+    // paddingVertical: 10
   },
 
   scrollview: {
     flex: 1,
     width: '100%',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    marginVertical: 10
   },
-
   card: {
     flexDirection: 'column',
     backgroundColor: 'white',
     columnGap: 10,
-    padding: 20,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -109,11 +125,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   key: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 50,
     color: 'white',
-    fontSize: theme.fontsSize.small,
-    paddingLeft: 10,
-    paddingVertical: 5
+    fontSize: theme.fontsSize.small
   }
 })
