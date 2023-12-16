@@ -6,22 +6,27 @@ import { theme } from '../interfaces/constants'
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export default function HomeScreen ({ navigation }: Props) {
   return (
-        <View style={styles.container}>
-          <View style={styles.btns}>
+    <View style={styles.container}>
+      <View style={styles.box}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => {
+            navigation.navigate('CreateShoppingList')
+          }}
+        >
+          <Text style={styles.btnText}>add shopping list</Text>
+        </Pressable>
 
-          <Pressable onPress={() => {
-            navigation.navigate('Create')
-          }}>
-                <Text style={styles.btn}>Create Dates</Text>
-            </Pressable>
-
-            <Pressable onPress={() => {
-              navigation.navigate('ListDates')
-            }}>
-                <Text style={styles.btn}>List Dates</Text>
-            </Pressable>
-              </View>
-        </View>
+        <Pressable
+          style={styles.btn}
+          onPress={() => {
+            navigation.navigate('ShowShoppingList')
+          }}
+        >
+          <Text style={styles.btnText}>shopping list</Text>
+        </Pressable>
+      </View>
+    </View>
   )
 }
 
@@ -29,22 +34,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: theme.colors.yellow
+    backgroundColor: theme.colors.yellow,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
-  btns: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-evenly'
-
+  box: {
+    width: '90%',
+    flexDirection: 'column',
+    gap: 20
   },
   btn: {
     backgroundColor: theme.colors.primary,
-    fontSize: theme.fontsSize.big,
-    color: theme.colors.yellow,
     paddingHorizontal: 40,
     paddingVertical: 20,
-    borderRadius: 50
+    borderRadius: 50,
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center'
+  },
+  btnText: {
+    color: theme.colors.yellow,
+    fontSize: theme.fontsSize.big
   }
 })

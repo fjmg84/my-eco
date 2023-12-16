@@ -16,7 +16,7 @@ export interface Item {
   date: string
 }
 
-export default function ListDatesScreen () {
+export default function ShowShoppingListScreen () {
   const [items, setItems] = useState<Item[]>([])
   const collectionRef = collection(db, 'shopping-cart')
 

@@ -1,14 +1,14 @@
 import { Link } from '@react-navigation/native'
 import { StyleSheet, Text, View } from 'react-native'
 import { theme } from '../interfaces/constants'
-import { type Item } from '../screens/list-dates'
+import { type Item } from '../screens/show-shopping-list'
 
 export default function ListItemsLink ({ item }: { item: Item }) {
   const { item: id, date } = item
 
   return <Link
         to={{
-          screen: 'Details',
+          screen: 'DetailsShoppingList',
           params: { id }
         }}
         style={styles.link}

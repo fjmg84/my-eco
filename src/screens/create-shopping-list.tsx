@@ -15,7 +15,7 @@ import Counter from '../components/counter'
 import { type Products } from '../interfaces/type'
 import Chips from '../components/chips'
 
-export default function CreateScreen () {
+export default function CreateShoppingScreen () {
   const today = new Date()
   const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
   const [name, setName] = useState('')

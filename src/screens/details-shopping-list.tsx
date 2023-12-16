@@ -13,9 +13,9 @@ import ListItemsDetails from '../components/list-items-details'
 import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Details'>
+type Props = NativeStackScreenProps<RootStackParamList, 'DetailsShoppingList'>
 
-export default function DetailsScreen ({ route }: Props) {
+export default function DetailsShoppingListScreen ({ route }: Props) {
   const [items, setItems] = useState<ListItemsProps>({})
   const {
     params: { id }
