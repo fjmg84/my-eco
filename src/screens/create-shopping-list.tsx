@@ -25,7 +25,6 @@ export default function CreateShoppingScreen () {
   const [quantity, setQuantity] = useState(1)
   const [store, setStore] = useState<Products[]>(DATA_SEEK.products)
   const [amount, setAmount] = useState(0)
-  console.log(amount)
 
   useEffect(() => {
     let amountTotal = amount
