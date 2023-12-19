@@ -18,8 +18,8 @@ export default function HomeScreen ({ navigation }: Props) {
         <View
           style={{
             backgroundColor: 'white',
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 50
@@ -39,8 +39,8 @@ export default function HomeScreen ({ navigation }: Props) {
         <View
           style={{
             backgroundColor: 'white',
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 50

@@ -1,6 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { theme } from '../interfaces/constants'
-import Chips from './chips'
 
 interface Props {
   value: number
@@ -10,11 +9,7 @@ interface Props {
 export default function Counter ({ value = 1, onAction }: Props) {
   return (
     <View style={styles.container}>
-
-      <Chips value={value} message='Product quantity' customStyle={{
-        backgroundColor: theme.colors.primary
-      }} />
-
+      <Text style={styles.value}>{value}</Text>
       <View style={styles.box}>
         <Pressable
           style={styles.btn}
@@ -22,15 +17,7 @@ export default function Counter ({ value = 1, onAction }: Props) {
             onAction((prev) => prev + 1)
           }}
         >
-          <Text
-            style={{
-              color: theme.colors.yellow,
-              fontSize: theme.fontsSize.big,
-              fontWeight: 'bold'
-            }}
-          >
-            +
-          </Text>
+          <Image source={require('../../assets/add-white.png')} />
         </Pressable>
         <Pressable
           style={styles.btn}
@@ -38,15 +25,7 @@ export default function Counter ({ value = 1, onAction }: Props) {
             onAction(1)
           }}
         >
-          <Text
-            style={{
-              color: theme.colors.yellow,
-              fontSize: theme.fontsSize.big,
-              fontWeight: 'bold'
-            }}
-          >
-            0
-          </Text>
+          <Image source={require('../../assets/zero.png')} />
         </Pressable>
         <Pressable
           style={styles.btn}
@@ -59,15 +38,7 @@ export default function Counter ({ value = 1, onAction }: Props) {
             })
           }}
         >
-          <Text
-            style={{
-              color: theme.colors.yellow,
-              fontSize: theme.fontsSize.big,
-              fontWeight: 'bold'
-            }}
-          >
-            -
-          </Text>
+          <Image source={require('../../assets/less.png')} />
         </Pressable>
       </View>
     </View>
@@ -82,22 +53,24 @@ const styles = StyleSheet.create({
     gap: 20
   },
   box: {
-    flexDirection: 'row'
-  },
-  quantity: {
-    borderRadius: 100,
-    height: 50,
-    width: 50,
+    flexDirection: 'row',
+    backgroundColor: theme.colors.blue,
+    borderRadius: 10,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.primary
+    width: '100%',
+    height: 71,
+    paddingHorizontal: 20
+  },
+  value: {
+    color: theme.colors.black_light,
+    fontSize: theme.fontsSize.big
   },
   btn: {
-    backgroundColor: theme.colors.primary,
-    width: 90,
-    height: 90,
+    height: 50,
+    width: 50,
+    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center'
-
   }
 })

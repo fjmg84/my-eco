@@ -2,13 +2,28 @@ export const DATA_SEEK = {
   date: new Date().getTime(),
   products: [{
     name: 'leche',
-    price: 1.19
+    price: 1.19,
+    quantity: 1
   }, {
-    name: 'pan',
-    price: 1.15
+    name: 'leche',
+    price: 1.19,
+    quantity: 1
   }, {
-    name: 'carne',
-    price: 5.75
+    name: 'leche',
+    price: 1.19,
+    quantity: 1
+  }, {
+    name: 'leche',
+    price: 1.19,
+    quantity: 1
+  }, {
+    name: 'leche',
+    price: 1.19,
+    quantity: 1
+  }, {
+    name: 'leche',
+    price: 1.19,
+    quantity: 1
   }],
   amount: 0.00
 }
