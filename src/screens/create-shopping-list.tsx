@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { doc } from 'firebase/firestore'
 import { Dialog } from '@rneui/themed'
 import { db } from '../firebase/connection-db'
 import { DATA_SEEK, theme } from '../interfaces/constants'
@@ -12,19 +12,32 @@ import {
   FlatList,
   Image
 } from 'react-native'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Counter from '../components/counter'
 import { type Products } from '../interfaces/type'
 import useUserStore from '../store/useUser'
+import useSettingsStore from '../store/useSettings'
+import useShoppingListStore from '../store/useShoppingList'
 
 export default function CreateShoppingScreen () {
   const { userName } = useUserStore()
+  const { settings } = useSettingsStore()
+  // TODO: falta modificar el limite del monto de la lista de compra
+  // TODO: falta limpiar los campos del formulario cuando se agrega un producto
+  const [limitAmount, setLimitAmount] = useState(settings?.limit_amount ?? 0)
+  const { createProduct } = useShoppingListStore()
+
   const today = new Date()
   const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+
   const [visible, setVisible] = useState(false)
-  const [name, setName] = useState('')
-  const [price, setPrice] = useState('')
-  const [quantity, setQuantity] = useState(1)
+
+  const [products, setProducts] = useState<Products>({
+    name: '',
+    price: 0,
+    quantity: 1
+  })
+
   const [store, setStore] = useState<Products[]>(DATA_SEEK.products)
   const [amount, setAmount] = useState(0)
 
@@ -42,10 +55,7 @@ export default function CreateShoppingScreen () {
   }
 
   const handleAddStore = () => {
-    setStore((prev) => [...prev, { name, price: Number(price), quantity }])
-    setName('')
-    setPrice('')
-    setQuantity(1)
+    setStore((prev) => [...prev, products])
   }
 
   const setItemCollection =
@@ -57,16 +67,8 @@ export default function CreateShoppingScreen () {
         }
 
         const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
-        await setDoc(docRef, {})
-        await addDoc(
-          collection(docRef, 'items'),
-          {
-            date: new Date().getTime(),
-            amount,
-            products: store
-          }
-        )
-        setAmount(0)
+        await createProduct({ product: store, doc: docRef })
+
         setStore([])
         alert('Products added successfully')
       }
@@ -75,9 +77,13 @@ export default function CreateShoppingScreen () {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          width: '100%'
+          width: '100%',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
         }}
       >
+        <View>
+
         <Text style={styles.labelAmount}>total</Text>
         <Text style={styles.amount}>
           {new Intl.NumberFormat('en-US', {
@@ -85,6 +91,22 @@ export default function CreateShoppingScreen () {
             currency: 'USD'
           }).format(amount)}
         </Text>
+          </View>
+
+          <View style={{
+            alignItems: 'flex-end'
+          }}>
+            <Text style={styles.labelAmount}>amount limit</Text>
+             <Text style={{
+               color: theme.colors.red,
+               fontWeight: 'bold',
+               fontSize: theme.fontsSize.big
+             }}>{new Intl.NumberFormat('en-ES', {
+               style: 'currency',
+               currency: 'USD'
+             }).format(limitAmount - amount)}</Text>
+          </View>
+
       </View>
 
       <FlatList
@@ -157,18 +179,18 @@ export default function CreateShoppingScreen () {
           <TextInput
             placeholder="product"
             style={styles.input}
-            value={name}
-            onChangeText={setName}
+            value={products.name}
+            onChangeText={(text) => { setProducts({ ...products, name: text }) }}
           />
           <TextInput
             placeholder="price"
             style={styles.input}
-            value={price}
+            value={products.price.toString()}
             keyboardType="numeric"
-            onChangeText={setPrice}
+            onChangeText={(text) => { setProducts({ ...products, price: Number(text) }) }}
           />
 
-          <Counter value={quantity} onAction={setQuantity} />
+          <Counter value={products.quantity} onAction={setProducts} />
         </View>
 
         <View style={styles.navbar}>

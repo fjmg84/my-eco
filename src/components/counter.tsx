@@ -1,9 +1,10 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { theme } from '../interfaces/constants'
+import { type Products } from '../interfaces/type'
 
 interface Props {
   value: number
-  onAction: React.Dispatch<React.SetStateAction<number>>
+  onAction: React.Dispatch<React.SetStateAction<Products>>
 }
 
 export default function Counter ({ value = 1, onAction }: Props) {
@@ -14,7 +15,7 @@ export default function Counter ({ value = 1, onAction }: Props) {
         <Pressable
           style={styles.btn}
           onPress={() => {
-            onAction((prev) => prev + 1)
+            onAction((prev) => { return { ...prev, quantity: prev.quantity + 1 } })
           }}
         >
           <Image source={require('../../assets/add-white.png')} />
@@ -22,7 +23,7 @@ export default function Counter ({ value = 1, onAction }: Props) {
         <Pressable
           style={styles.btn}
           onPress={() => {
-            onAction(1)
+            onAction(prev => { return { ...prev, quantity: 1 } })
           }}
         >
           <Image source={require('../../assets/zero.png')} />
@@ -31,8 +32,8 @@ export default function Counter ({ value = 1, onAction }: Props) {
           style={styles.btn}
           onPress={() => {
             onAction((prev) => {
-              if (prev > 1) {
-                return prev - 1
+              if (prev.quantity > 1) {
+                return { ...prev, quantity: prev.quantity - 1 }
               }
               return prev
             })
