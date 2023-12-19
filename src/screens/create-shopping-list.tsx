@@ -15,8 +15,10 @@ import {
 import { useEffect, useState } from 'react'
 import Counter from '../components/counter'
 import { type Products } from '../interfaces/type'
+import useUserStore from '../store/useUser'
 
 export default function CreateShoppingScreen () {
+  const { userName } = useUserStore()
   const today = new Date()
   const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
   const [visible, setVisible] = useState(false)
@@ -54,10 +56,10 @@ export default function CreateShoppingScreen () {
           return
         }
 
-        const docRef = doc(db, 'shopping-cart', nameSubCollection)
+        const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
         await setDoc(docRef, {})
         await addDoc(
-          collection(db, 'shopping-cart', nameSubCollection, 'items'),
+          collection(docRef, 'items'),
           {
             date: new Date().getTime(),
             amount,

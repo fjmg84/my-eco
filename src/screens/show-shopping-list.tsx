@@ -6,11 +6,14 @@ import {
   type CollectionReference,
   type DocumentData,
   collection,
-  getDocs
+  getDocs,
+  doc,
+  getDoc
 } from 'firebase/firestore'
 import { db } from '../firebase/connection-db'
 import { theme } from '../interfaces/constants'
 import ShoppingDateList from '../components/shopping-date-list'
+import useUserStore from '../store/useUser'
 
 export interface Item {
   item: string
@@ -19,13 +22,15 @@ export interface Item {
 
 export default function ShowShoppingListScreen () {
   const [items, setItems] = useState<Item[]>([])
-  const collectionRef = collection(db, 'shopping-cart')
+  const { userName } = useUserStore()
+  const collectionRef = collection(db, 'shopping', userName, 'list')
 
   useEffect(() => {
     listDateCollection({
       collectionRef
     })
       .then((response) => {
+        console.log(response)
         setItems(response)
       })
       .catch((error) => {
@@ -40,6 +45,7 @@ export default function ShowShoppingListScreen () {
   }) => {
     const responseDate: Item[] = []
     const response = await getDocs(collectionRef)
+    console.log(response.docs)
     response.forEach((value) => {
       const date = new Date(value.id)
       responseDate.push({

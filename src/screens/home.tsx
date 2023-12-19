@@ -1,41 +1,33 @@
-import { useEffect, useState } from 'react'
-import { doc, getDoc } from 'firebase/firestore'
+import { useEffect } from 'react'
 import { type NativeStackScreenProps } from '@react-navigation/native-stack'
 import { View, StyleSheet, Image, Text } from 'react-native'
 import { type RootStackParamList } from '../interfaces/type'
 import { ROUTE_NAME, theme } from '../interfaces/constants'
 import CustomButton from '../components/common/button'
-import { db } from '../firebase/connection-db'
+import useUserStore from '../store/useUser'
+import useSettingsStore from '../store/useSettings'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-interface Settings {
-  limit_amount: number
-}
-
 export default function HomeScreen ({ navigation }: Props) {
-  const [settings, setSettings] = useState<Settings>({
-    limit_amount: 0
-  })
+  const { userName } = useUserStore()
+  const { settings, getSettings } = useSettingsStore()
 
   useEffect(() => {
-    getDoc(doc(db, 'settings', 'user'))
-      .then((response) => {
-        if (response.data() !== undefined) {
-          setSettings({ ...settings, limit_amount: response.data()?.limit_amount })
-        }
-      })
+    getSettings({ username: userName })
   }, [])
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>limit by mount</Text>
-        <Text style={styles.value}>{new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD'
-        }).format(settings.limit_amount)}</Text>
-
+        {
+          settings?.limit_amount !== undefined &&
+          <Text style={styles.value}>{new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+          }).format(settings.limit_amount)}</Text>
+        }
       </View>
 
       <View style={{
