@@ -12,7 +12,6 @@ import { db } from '../firebase/connection-db'
 import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
 import ShoppingItemsList from '../components/shopping-items-list'
-import { CircleSnail } from 'react-native-progress'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailsShoppingList'>
 
@@ -63,8 +62,8 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
          alignItems: 'center',
          gap: 10
        }}>
-         {Object.keys(items).length > 0
-           ? Object.entries(items).map(([key, value], index) => {
+         {Object.keys(items).length > 0 &&
+           Object.entries(items).map(([key, value], index) => {
              const date = new Date(Number(key))
              return (
               <View key={index} style={styles.card}>
@@ -82,14 +81,6 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
               </View>
              )
            })
-           : <CircleSnail
-          thickness={7}
-          size={90}
-          indeterminate={true}
-          color={[
-            theme.colors.primary,
-            theme.colors.secondary
-          ]}/>
           }
        </View>
       </ScrollView>

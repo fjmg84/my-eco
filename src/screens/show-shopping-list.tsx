@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { StyleSheet, View, Alert, FlatList } from 'react-native'
-import { CircleSnail } from 'react-native-progress'
+// import { CircleSnail } from 'react-native-progress'
 
 import {
   type CollectionReference,
@@ -53,20 +53,13 @@ export default function ShowShoppingListScreen () {
   return (
     <View style={styles.container}>
       {
-        items.length > 0
-          ? <FlatList
+
+          <FlatList
           style={{ width: '100%' }}
           data={items}
           renderItem={({ item }) => <ShoppingDateList item={item} />}
         />
-          : <CircleSnail
-          thickness={7}
-          size={90}
-          indeterminate={true}
-          color={[
-            theme.colors.primary,
-            theme.colors.secondary
-          ]}/>
+
       }
     </View>
   )
