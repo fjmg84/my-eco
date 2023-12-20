@@ -1,7 +1,7 @@
+import React, { useState } from 'react'
 import { doc } from 'firebase/firestore'
 import { Dialog } from '@rneui/themed'
 import { db } from '../firebase/connection-db'
-import { DATA_SEEK, theme } from '../interfaces/constants'
 import {
   Pressable,
   Text,
@@ -10,20 +10,26 @@ import {
   View,
   SafeAreaView,
   FlatList,
-  Image
+  Image,
+  Alert
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { theme } from '../interfaces/constants'
 import Counter from '../components/counter'
 import { type Products } from '../interfaces/type'
 import useUserStore from '../store/useUser'
 import useSettingsStore from '../store/useSettings'
 import useShoppingListStore from '../store/useShoppingList'
 
+const INITIAL_VALUES = {
+  name: '',
+  price: '',
+  quantity: 1
+}
+
 export default function CreateShoppingScreen () {
   const { userName } = useUserStore()
   const { settings } = useSettingsStore()
-  // TODO: falta modificar el limite del monto de la lista de compra
-  // TODO: falta limpiar los campos del formulario cuando se agrega un producto
+
   const [limitAmount, setLimitAmount] = useState(settings?.limit_amount ?? 0)
   const { createProduct } = useShoppingListStore()
 
@@ -32,45 +38,54 @@ export default function CreateShoppingScreen () {
 
   const [visible, setVisible] = useState(false)
 
-  const [products, setProducts] = useState<Products>({
-    name: '',
-    price: 0,
-    quantity: 1
-  })
+  const [products, setProducts] = useState<Products>(INITIAL_VALUES)
 
-  const [store, setStore] = useState<Products[]>(DATA_SEEK.products)
+  const [store, setStore] = useState<Products[]>([])
   const [amount, setAmount] = useState(0)
-
-  useEffect(() => {
-    let amountTotal = amount
-    store.forEach((item) => {
-      amountTotal += item.price * item.quantity
-    })
-
-    setAmount(Number(amountTotal))
-  }, [store])
 
   const toggleDialog = () => {
     setVisible(!visible)
   }
 
   const handleAddStore = () => {
+    const { name, price, quantity } = products
+
+    if (Number.isNaN(Number(price))) {
+      Alert.alert('Error', 'The price must be a number, delete all (,)')
+      return
+    }
+
+    if (name === '') {
+      Alert.alert('Error', 'The name is required')
+      return
+    }
+
+    if (price === '') {
+      Alert.alert('Error', 'The price is required')
+      return
+    }
+
+    const amount = Number(price) * quantity
+    setAmount((prev) => prev + amount)
     setStore((prev) => [...prev, products])
+    setProducts(INITIAL_VALUES)
   }
 
   const setItemCollection =
     ({ nameSubCollection }: { nameSubCollection: string }) =>
-      async () => {
+      () => {
         if (store.length === 0) {
           alert('You must add at least one product')
           return
         }
 
         const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
-        await createProduct({ product: store, doc: docRef })
-
-        setStore([])
-        alert('Products added successfully')
+        createProduct({ product: store, doc: docRef }).then(() => {
+          setLimitAmount(settings?.limit_amount ?? 0)
+          setAmount(0)
+          setStore([])
+          alert('Products added successfully')
+        })
       }
 
   return (
@@ -83,30 +98,34 @@ export default function CreateShoppingScreen () {
         }}
       >
         <View>
+          <Text style={styles.labelAmount}>total</Text>
+          <Text style={styles.amount}>
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD'
+            }).format(amount)}
+          </Text>
+        </View>
 
-        <Text style={styles.labelAmount}>total</Text>
-        <Text style={styles.amount}>
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-          }).format(amount)}
-        </Text>
-          </View>
-
-          <View style={{
+        <View
+          style={{
             alignItems: 'flex-end'
-          }}>
-            <Text style={styles.labelAmount}>amount limit</Text>
-             <Text style={{
-               color: theme.colors.red,
-               fontWeight: 'bold',
-               fontSize: theme.fontsSize.big
-             }}>{new Intl.NumberFormat('en-ES', {
-               style: 'currency',
-               currency: 'USD'
-             }).format(limitAmount - amount)}</Text>
-          </View>
-
+          }}
+        >
+          <Text style={styles.labelAmount}>amount limit</Text>
+          <Text
+            style={{
+              color: theme.colors.red,
+              fontWeight: 'bold',
+              fontSize: theme.fontsSize.big
+            }}
+          >
+            {new Intl.NumberFormat('en-ES', {
+              style: 'currency',
+              currency: 'USD'
+            }).format(limitAmount - amount)}
+          </Text>
+        </View>
       </View>
 
       <FlatList
@@ -134,10 +153,12 @@ export default function CreateShoppingScreen () {
                 {item.quantity}
               </Text>
               <Text style={{ ...styles.row, width: 80, textAlign: 'right' }}>
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD'
-                }).format(item.price)}
+                {item.price !== null
+                  ? new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                  }).format(Number(item.price))
+                  : null}
               </Text>
             </View>
           )
@@ -146,21 +167,16 @@ export default function CreateShoppingScreen () {
 
       <View style={styles.navbar}>
         <Pressable style={styles.btn} onPress={toggleDialog}>
-          <Image
-            source={require('../../assets/add.png')}
-
-          />
+          <Image source={require('../../assets/add.png')} />
         </Pressable>
         <Pressable style={styles.btn}>
-          <Image
-            source={require('../../assets/delete.png')}
-
-          />
+          <Image source={require('../../assets/delete.png')} />
         </Pressable>
-        <Pressable style={styles.btn} onPress={setItemCollection({ nameSubCollection })}>
-          <Image
-            source={require('../../assets/upload-data.png')}
-          />
+        <Pressable
+          style={styles.btn}
+          onPress={setItemCollection({ nameSubCollection })}
+        >
+          <Image source={require('../../assets/upload-data.png')} />
         </Pressable>
       </View>
 
@@ -180,14 +196,20 @@ export default function CreateShoppingScreen () {
             placeholder="product"
             style={styles.input}
             value={products.name}
-            onChangeText={(text) => { setProducts({ ...products, name: text }) }}
+            onChangeText={(text) => {
+              setProducts({ ...products, name: text })
+            }}
           />
+
           <TextInput
-            placeholder="price"
+            placeholder="0.00"
             style={styles.input}
-            value={products.price.toString()}
-            keyboardType="numeric"
-            onChangeText={(text) => { setProducts({ ...products, price: Number(text) }) }}
+            value={products.price}
+            keyboardType="decimal-pad"
+            inputMode="numeric"
+            onChangeText={(text) => {
+              setProducts({ ...products, price: text })
+            }}
           />
 
           <Counter value={products.quantity} onAction={setProducts} />

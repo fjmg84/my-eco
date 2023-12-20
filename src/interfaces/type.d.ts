@@ -1,6 +1,6 @@
 export interface Products {
   name: string
-  price: number
+  price: string
   quantity: number
 }
 
