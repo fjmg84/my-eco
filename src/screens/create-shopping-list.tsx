@@ -1,24 +1,23 @@
 import React, { useState } from 'react'
 import { doc } from 'firebase/firestore'
-import { Dialog } from '@rneui/themed'
 import { db } from '../firebase/connection-db'
 import {
   Pressable,
   Text,
   StyleSheet,
-  TextInput,
   View,
   SafeAreaView,
-  FlatList,
   Image,
   Alert
 } from 'react-native'
 import { theme } from '../interfaces/constants'
-import Counter from '../components/counter'
+
 import { type Products } from '../interfaces/type'
 import useUserStore from '../store/useUser'
 import useSettingsStore from '../store/useSettings'
 import useShoppingListStore from '../store/useShoppingList'
+import ShoppingListCreateForm from '../components/common/shopping-list-create-form'
+import ShoppingListProducts from '../components/common/shopping-list-product'
 
 const INITIAL_VALUES = {
   name: '',
@@ -38,8 +37,7 @@ export default function CreateShoppingScreen () {
 
   const [visible, setVisible] = useState(false)
 
-  const [products, setProducts] = useState<Products>(INITIAL_VALUES)
-
+  const [product, setProduct] = useState<Products>(INITIAL_VALUES)
   const [store, setStore] = useState<Products[]>([])
   const [amount, setAmount] = useState(0)
 
@@ -47,28 +45,34 @@ export default function CreateShoppingScreen () {
     setVisible(!visible)
   }
 
+  const handleProduct = ({ name, value }: { name: string, value: string | number }) => {
+    setProduct((prev) => {
+      return { ...prev, [name]: value }
+    })
+  }
+
   const handleAddStore = () => {
-    const { name, price, quantity } = products
+    const { name, price, quantity } = product
+
+    if (price.length === 0) {
+      Alert.alert('Error', 'The price is required.')
+      return
+    }
+
+    if (name.length === 0) {
+      Alert.alert('Error', 'The name is required.')
+      return
+    }
 
     if (Number.isNaN(Number(price))) {
-      Alert.alert('Error', 'The price must be a number, delete all (,)')
-      return
-    }
-
-    if (name === '') {
-      Alert.alert('Error', 'The name is required')
-      return
-    }
-
-    if (price === '') {
-      Alert.alert('Error', 'The price is required')
+      Alert.alert('Error', 'The price must be a number.')
       return
     }
 
     const amount = Number(price) * quantity
     setAmount((prev) => prev + amount)
-    setStore((prev) => [...prev, products])
-    setProducts(INITIAL_VALUES)
+    setStore((prev) => [...prev, product])
+    setProduct(INITIAL_VALUES)
   }
 
   const setItemCollection =
@@ -128,42 +132,7 @@ export default function CreateShoppingScreen () {
         </View>
       </View>
 
-      <FlatList
-        style={styles.scrollView}
-        data={store}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              borderBottomColor: theme.colors.black_light,
-              borderBottomWidth: 1
-            }}
-          />
-        )}
-        renderItem={({ item }) => {
-          return (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 10
-              }}
-            >
-              <Text style={{ ...styles.row, width: 220 }}>{item.name}</Text>
-              <Text style={{ ...styles.row, width: 20, textAlign: 'center' }}>
-                {item.quantity}
-              </Text>
-              <Text style={{ ...styles.row, width: 80, textAlign: 'right' }}>
-                {item.price !== null
-                  ? new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD'
-                  }).format(Number(item.price))
-                  : null}
-              </Text>
-            </View>
-          )
-        }}
-      />
+      <ShoppingListProducts products={store}/>
 
       <View style={styles.navbar}>
         <Pressable style={styles.btn} onPress={toggleDialog}>
@@ -180,51 +149,13 @@ export default function CreateShoppingScreen () {
         </Pressable>
       </View>
 
-      <Dialog
-        overlayStyle={{
-          borderRadius: 10,
-          justifyContent: 'space-between',
-          height: 450,
-          padding: 20,
-          width: '90%'
-        }}
-        isVisible={visible}
-        onBackdropPress={toggleDialog}
-      >
-        <View style={{ gap: 10 }}>
-          <TextInput
-            placeholder="product"
-            style={styles.input}
-            value={products.name}
-            onChangeText={(text) => {
-              setProducts({ ...products, name: text })
-            }}
-          />
-
-          <TextInput
-            placeholder="0.00"
-            style={styles.input}
-            value={products.price}
-            keyboardType="decimal-pad"
-            inputMode="numeric"
-            onChangeText={(text) => {
-              setProducts({ ...products, price: text })
-            }}
-          />
-
-          <Counter value={products.quantity} onAction={setProducts} />
-        </View>
-
-        <View style={styles.navbar}>
-          <Pressable style={styles.btn} onPress={handleAddStore}>
-            <Image source={require('../../assets/accept.png')} />
-          </Pressable>
-
-          <Pressable style={styles.btn} onPress={toggleDialog}>
-            <Image source={require('../../assets/cancel.png')} />
-          </Pressable>
-        </View>
-      </Dialog>
+      <ShoppingListCreateForm
+        handleAddStore={handleAddStore}
+        product={product}
+        handleProduct={handleProduct}
+        toggleDialog={toggleDialog}
+        visible={visible}
+      />
     </SafeAreaView>
   )
 }
@@ -236,13 +167,6 @@ const styles = StyleSheet.create({
     padding: 10,
     position: 'relative',
     alignItems: 'center'
-  },
-  scrollView: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginVertical: 20,
-    borderRadius: 10,
-    width: '100%'
   },
   labelAmount: {
     color: theme.colors.black_light,
@@ -274,20 +198,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 50
-  },
-  addBtn: {
-    backgroundColor: theme.colors.blue,
-    flexDirection: 'row',
-    height: 71,
-    borderRadius: 50,
-    paddingHorizontal: 10,
-    columnGap: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  input: {
-    borderColor: theme.colors.black_light,
-    borderBottomWidth: 1,
-    paddingVertical: 15
   }
+
 })

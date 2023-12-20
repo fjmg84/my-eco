@@ -1,45 +1,53 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import { theme } from '../interfaces/constants'
-import { type Products } from '../interfaces/type'
+import { useEffect, useState } from 'react'
+import { theme } from '../../interfaces/constants'
 
 interface Props {
   value: number
-  onAction: React.Dispatch<React.SetStateAction<Products>>
+  onReturnCounter: (counter: number) => void
 }
 
-export default function Counter ({ value = 1, onAction }: Props) {
+export default function Counter ({ value, onReturnCounter }: Props) {
+  const [counter, setCounter] = useState(1)
+
+  useEffect(() => { setCounter(value) }, [value])
+
+  useEffect(() => {
+    onReturnCounter(counter)
+  }, [counter])
+
   return (
     <View style={styles.container}>
-      <Text style={styles.value}>{value}</Text>
+      <Text style={styles.value}>{counter}</Text>
       <View style={styles.box}>
         <Pressable
           style={styles.btn}
           onPress={() => {
-            onAction((prev) => { return { ...prev, quantity: prev.quantity + 1 } })
+            setCounter(counter + 1)
           }}
         >
-          <Image source={require('../../assets/add-white.png')} />
+          <Image source={require('../../../assets/add-white.png')} />
         </Pressable>
         <Pressable
           style={styles.btn}
           onPress={() => {
-            onAction(prev => { return { ...prev, quantity: 1 } })
+            setCounter(1)
           }}
         >
-          <Image source={require('../../assets/zero.png')} />
+          <Image source={require('../../../assets/zero.png')} />
         </Pressable>
         <Pressable
           style={styles.btn}
           onPress={() => {
-            onAction((prev) => {
-              if (prev.quantity > 1) {
-                return { ...prev, quantity: prev.quantity - 1 }
+            setCounter((prev) => {
+              if (counter > 1) {
+                return counter - 1
               }
               return prev
             })
           }}
         >
-          <Image source={require('../../assets/less.png')} />
+          <Image source={require('../../../assets/less.png')} />
         </Pressable>
       </View>
     </View>

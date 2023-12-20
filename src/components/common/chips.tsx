@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from 'react-native'
-import { theme } from '../interfaces/constants'
+import { theme } from '../../interfaces/constants'
 
 interface Props {
   value: string | number
