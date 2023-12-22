@@ -10,57 +10,50 @@ import {
   Image,
   Alert
 } from 'react-native'
-import { theme } from '../interfaces/constants'
 
-import { type Products } from '../interfaces/type'
+import { type Product } from '../interfaces/type'
 import useUserStore from '../store/useUser'
 import useSettingsStore from '../store/useSettings'
 import useShoppingListStore from '../store/useShoppingList'
 import ShoppingListCreateForm from '../components/common/shopping-list-create-form'
 import ShoppingListProducts from '../components/common/shopping-list-product'
+import { theme } from '../interfaces/constants'
 
 const INITIAL_VALUES = {
   name: '',
   price: '',
-  quantity: 1
+  quantity: 1,
+  checked: false
 }
 
 export default function CreateShoppingScreen () {
   const { userName } = useUserStore()
-  const { settings } = useSettingsStore()
-
-  const [limitAmount, setLimitAmount] = useState(settings?.limit_amount ?? 0)
-  const { createProduct } = useShoppingListStore()
+  const { settings: { limit_amount: limitAmount }, updateSettings, getSettings } = useSettingsStore()
+  const { values: products, deleteProduct, saveProductList, addProduct } = useShoppingListStore()
 
   const today = new Date()
   const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
 
   const [visible, setVisible] = useState(false)
-
-  const [product, setProduct] = useState<Products>(INITIAL_VALUES)
-  const [store, setStore] = useState<Products[]>([])
-  const [amount, setAmount] = useState(0)
+  const [product, setProduct] = useState<Product>(INITIAL_VALUES)
 
   const toggleDialog = () => {
     setVisible(!visible)
   }
 
+  // Add values to product state
   const handleProduct = ({ name, value }: { name: string, value: string | number }) => {
     setProduct((prev) => {
       return { ...prev, [name]: value }
     })
   }
 
-  const handleAddStore = () => {
-    const { name, price, quantity } = product
+  // Add product from form to global store product
+  const handleAddProductToStore = () => {
+    const { name, price } = product
 
-    if (price.length === 0) {
-      Alert.alert('Error', 'The price is required.')
-      return
-    }
-
-    if (name.length === 0) {
-      Alert.alert('Error', 'The name is required.')
+    if (price.length === 0 || name.length === 0) {
+      Alert.alert('Error', 'The name and price is required.')
       return
     }
 
@@ -69,27 +62,31 @@ export default function CreateShoppingScreen () {
       return
     }
 
-    const amount = Number(price) * quantity
-    setAmount((prev) => prev + amount)
-    setStore((prev) => [...prev, product])
+    addProduct(product)
     setProduct(INITIAL_VALUES)
   }
 
-  const setItemCollection =
+  const handleSaveShoppingList =
     ({ nameSubCollection }: { nameSubCollection: string }) =>
-      () => {
-        if (store.length === 0) {
+      async () => {
+        if (products.products.length === 0) {
           alert('You must add at least one product')
           return
         }
 
         const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
-        createProduct({ product: store, doc: docRef }).then(() => {
-          setLimitAmount(settings?.limit_amount ?? 0)
-          setAmount(0)
-          setStore([])
-          alert('Products added successfully')
-        })
+        const { message, status } = await saveProductList({ doc: docRef })
+        if (!status) {
+          updateSettings({
+            username: userName,
+            settings: {
+              limit_amount: products.amount
+            }
+          })
+
+          getSettings({ username: userName })
+        }
+        alert(message)
       }
 
   return (
@@ -107,7 +104,7 @@ export default function CreateShoppingScreen () {
             {new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: 'USD'
-            }).format(amount)}
+            }).format(products.amount)}
           </Text>
         </View>
 
@@ -127,30 +124,32 @@ export default function CreateShoppingScreen () {
             {new Intl.NumberFormat('en-ES', {
               style: 'currency',
               currency: 'USD'
-            }).format(limitAmount - amount)}
+            }).format(limitAmount - products.amount)}
           </Text>
         </View>
       </View>
 
-      <ShoppingListProducts products={store}/>
+      <ShoppingListProducts products={products.products} />
 
       <View style={styles.navbar}>
         <Pressable style={styles.btn} onPress={toggleDialog}>
           <Image source={require('../../assets/add.png')} />
         </Pressable>
-        <Pressable style={styles.btn}>
+        <Pressable style={styles.btn}
+          onPress={deleteProduct}
+        >
           <Image source={require('../../assets/delete.png')} />
         </Pressable>
         <Pressable
           style={styles.btn}
-          onPress={setItemCollection({ nameSubCollection })}
+          onPress={handleSaveShoppingList({ nameSubCollection })}
         >
           <Image source={require('../../assets/upload-data.png')} />
         </Pressable>
       </View>
 
       <ShoppingListCreateForm
-        handleAddStore={handleAddStore}
+        handleAddStore={handleAddProductToStore}
         product={product}
         handleProduct={handleProduct}
         toggleDialog={toggleDialog}

@@ -3,10 +3,10 @@ import { Dialog } from '@rneui/themed'
 
 import Counter from './counter'
 import { theme } from '../../interfaces/constants'
-import { type Products } from '../../interfaces/type'
+import { type Product } from '../../interfaces/type'
 
 interface Props {
-  product: Products
+  product: Product
   visible: boolean
   toggleDialog: () => void
   handleProduct: ({ name, value }: { name: string, value: string | number }) => void
@@ -20,8 +20,6 @@ export default function ShoppingListCreateForm ({
   toggleDialog,
   handleAddStore
 }: Props) {
-  console.log(product)
-
   const handleQuantity = (value: number) => {
     handleProduct({ name: 'quantity', value })
   }

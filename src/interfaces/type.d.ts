@@ -1,12 +1,14 @@
-export interface Products {
+export interface Product {
+  id?: string | number
   name: string
   price: string
   quantity: number
+  checked: boolean
 }
 
-export interface ItemsProps {
+export interface ShoppingListItem {
   date: number
-  products: Products[]
+  products: Product[]
   amount: number
 }
 
@@ -20,5 +22,5 @@ export interface RootStackParamList {
 }
 
 export interface ListItemsProps {
-  [key: string]: ItemsProps[]
+  [key: string]: ShoppingListItem[]
 }
