@@ -18,6 +18,7 @@ import useShoppingListStore from '../store/useShoppingList'
 import ShoppingListCreateForm from '../components/common/shopping-list-create-form'
 import ShoppingListProducts from '../components/common/shopping-list-product'
 import { theme } from '../interfaces/constants'
+import Chips from '../components/common/chips'
 
 const INITIAL_VALUES = {
   name: '',
@@ -28,8 +29,17 @@ const INITIAL_VALUES = {
 
 export default function CreateShoppingScreen () {
   const { userName } = useUserStore()
-  const { settings: { limit_amount: limitAmount }, updateSettings, getSettings } = useSettingsStore()
-  const { values: products, deleteProduct, saveProductList, addProduct } = useShoppingListStore()
+  const {
+    settings: { limit_amount: limitAmount },
+    updateSettings,
+    getSettings
+  } = useSettingsStore()
+  const {
+    values: products,
+    deleteProduct,
+    saveProductList,
+    addProduct
+  } = useShoppingListStore()
 
   const today = new Date()
   const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
@@ -42,7 +52,13 @@ export default function CreateShoppingScreen () {
   }
 
   // Add values to product state
-  const handleProduct = ({ name, value }: { name: string, value: string | number }) => {
+  const handleProduct = ({
+    name,
+    value
+  }: {
+    name: string
+    value: string | number
+  }) => {
     setProduct((prev) => {
       return { ...prev, [name]: value }
     })
@@ -66,6 +82,7 @@ export default function CreateShoppingScreen () {
     setProduct(INITIAL_VALUES)
   }
 
+  // Add shopping list to firebase
   const handleSaveShoppingList =
     ({ nameSubCollection }: { nameSubCollection: string }) =>
       async () => {
@@ -88,6 +105,8 @@ export default function CreateShoppingScreen () {
         }
         alert(message)
       }
+
+  const productSelectedToDelete = products.products.filter(({ checked }) => checked)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -135,10 +154,17 @@ export default function CreateShoppingScreen () {
         <Pressable style={styles.btn} onPress={toggleDialog}>
           <Image source={require('../../assets/add.png')} />
         </Pressable>
-        <Pressable style={styles.btn}
-          onPress={deleteProduct}
-        >
-          <Image source={require('../../assets/delete.png')} />
+        <Pressable style={styles.btn} onPress={deleteProduct}>
+          <View style={{
+            position: 'relative'
+          }}>
+            <Image source={require('../../assets/delete.png')} />
+            {
+              productSelectedToDelete.length > 0 && (
+                <Chips value={productSelectedToDelete.length} />
+              )
+            }
+          </View>
         </Pressable>
         <Pressable
           style={styles.btn}
@@ -198,5 +224,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50
   }
-
 })
