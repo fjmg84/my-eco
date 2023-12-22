@@ -93,12 +93,12 @@ export default function CreateShoppingScreen () {
 
         const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
         const { message, status } = await saveProductList({ doc: docRef })
-        console.log(message)
+
         if (!status) {
           updateSettings({
             username: userName,
             settings: {
-              limit_amount: products.amount
+              limit_amount: limitAmount - products.amount
             }
           })
 
