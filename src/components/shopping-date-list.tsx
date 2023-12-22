@@ -13,7 +13,11 @@ export default function ShoppingDateList ({ item }: { item: Item }) {
         }}
         style={styles.link}
         >
-          <View>
+          <View style={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
           <Text style={styles.text}>{id}</Text>
           <Text style={styles.subtext}>({date})</Text>
           </View>
@@ -22,20 +26,19 @@ export default function ShoppingDateList ({ item }: { item: Item }) {
 
 const styles = StyleSheet.create({
   link: {
-    textAlign: 'center',
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.blue,
     borderColor: theme.colors.yellow,
     borderStyle: 'solid',
     borderTopWidth: 1,
     padding: 35
   },
   text: {
-
-    color: theme.colors.yellow,
+    textAlign: 'center',
+    color: 'white',
     fontSize: theme.fontsSize.normal
   },
   subtext: {
-    color: theme.colors.red,
+    color: theme.colors.black_light,
     fontSize: theme.fontsSize.small
   }
 })

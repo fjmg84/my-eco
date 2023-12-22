@@ -1,6 +1,7 @@
 import { create } from 'zustand'
-import { type DocumentData, type DocumentReference, setDoc, addDoc, collection } from 'firebase/firestore'
+import { type DocumentData, type DocumentReference, setDoc, addDoc, collection, getDocs, type CollectionReference } from 'firebase/firestore'
 import { type ShoppingListItem, type Product } from '../interfaces/type'
+import { type Item } from '../screens/show-shopping-list'
 
 const INITIAL_STATE = {
   amount: 0,
@@ -18,6 +19,7 @@ interface ShoppingListState {
   updateProduct: (product: Product) => void
   deleteProduct: () => void
   saveProductList: ({ doc }: { doc: DocumentReference<DocumentData, DocumentData> }) => Promise<Response>
+  listAllShoppingLists: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<Item[]>
 
 }
 
@@ -82,6 +84,19 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       })
 
     return await error
+  },
+
+  listAllShoppingLists: async ({ collectionRef }) => {
+    const responseDate: Item[] = []
+    const response = await getDocs(collectionRef)
+    response.forEach((value) => {
+      const date = new Date(value.id)
+      responseDate.push({
+        item: value.id,
+        date: date.toDateString()
+      })
+    })
+    return responseDate
   }
 }))
 
