@@ -18,7 +18,7 @@ export default function Counter ({ value, onReturnCounter }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.value}>{counter}</Text>
+
       <View style={styles.box}>
         <Pressable
           style={styles.btn}
@@ -28,14 +28,16 @@ export default function Counter ({ value, onReturnCounter }: Props) {
         >
           <Image source={require('../../../assets/add-white.png')} />
         </Pressable>
-        <Pressable
-          style={styles.btn}
-          onPress={() => {
-            setCounter(1)
-          }}
-        >
-          <Image source={require('../../../assets/zero.png')} />
-        </Pressable>
+        <View style={{
+          backgroundColor: 'white',
+          height: 50,
+          width: 50,
+          borderRadius: 50,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+        <Text style={styles.value}>{counter}</Text>
+        </View>
         <Pressable
           style={styles.btn}
           onPress={() => {
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 20
+    gap: 10
   },
   box: {
     flexDirection: 'row',

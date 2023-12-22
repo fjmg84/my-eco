@@ -9,7 +9,13 @@ interface Props {
   product: Product
   visible: boolean
   toggleDialog: () => void
-  handleProduct: ({ name, value }: { name: string, value: string | number }) => void
+  handleProduct: ({
+    name,
+    value
+  }: {
+    name: string
+    value: string | number
+  }) => void
   handleAddStore: () => void
 }
 
@@ -30,7 +36,7 @@ export default function ShoppingListCreateForm ({
       isVisible={visible}
       onBackdropPress={toggleDialog}
     >
-      <View style={{ gap: 10 }}>
+
         <TextInput
           placeholder="product"
           style={styles.input}
@@ -52,17 +58,16 @@ export default function ShoppingListCreateForm ({
         />
 
         <Counter value={product.quantity} onReturnCounter={handleQuantity} />
-      </View>
+        <View style={styles.navbar}>
+          <Pressable style={styles.btn} onPress={handleAddStore}>
+            <Image source={require('../../../assets/accept.png')} />
+          </Pressable>
 
-      <View style={styles.navbar}>
-        <Pressable style={styles.btn} onPress={handleAddStore}>
-          <Image source={require('../../../assets/accept.png')} />
-        </Pressable>
+          <Pressable style={styles.btn} onPress={toggleDialog}>
+            <Image source={require('../../../assets/cancel.png')} />
+          </Pressable>
+        </View>
 
-        <Pressable style={styles.btn} onPress={toggleDialog}>
-          <Image source={require('../../../assets/cancel.png')} />
-        </Pressable>
-      </View>
     </Dialog>
   )
 }
@@ -70,9 +75,10 @@ export default function ShoppingListCreateForm ({
 const styles = StyleSheet.create({
   dialog: {
     borderRadius: 10,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     height: 450,
-    padding: 20,
+    paddingVertical: 10,
+    gap: 40,
     width: '90%'
   },
 
@@ -105,8 +111,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   input: {
-    borderColor: theme.colors.black_light,
-    borderBottomWidth: 1,
-    paddingVertical: 15
+    padding: 20,
+    backgroundColor: theme.colors.yellow,
+    borderRadius: 50
   }
 })
