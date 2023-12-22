@@ -22,7 +22,6 @@ export default function ShowShoppingListScreen () {
   useEffect(() => {
     listAllShoppingLists({ collectionRef })
       .then((response) => {
-        console.log(response)
         setItems(response)
       })
       .catch((error) => {
