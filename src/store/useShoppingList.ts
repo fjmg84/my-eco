@@ -7,11 +7,9 @@ const INITIAL_STATE = {
   date: new Date().getTime(),
   products: []
 }
-
 interface Response {
   status: boolean
   message: string
-
 }
 
 interface ShoppingListState {
@@ -34,6 +32,7 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       }
     }))
   },
+
   addProduct: (product) => {
     set(({ values }) => ({
       values: {
@@ -56,14 +55,11 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       }
     }))
   },
+
   saveProductList: async ({ doc }) => {
-    const error: Response = {
-      message: '',
-      status: false
-    }
     const amount = get().values.products.reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0)
     await setDoc(doc, {})
-    addDoc(
+    const error = addDoc(
       collection(doc, 'items'),
       {
         date: new Date().getTime(),
@@ -73,14 +69,19 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     )
       .then(() => {
         set({ values: INITIAL_STATE })
-        error.message = 'Shopping list create correctly'
+        return {
+          status: false,
+          message: 'Shopping list create correctly'
+        }
       })
       .catch((err) => {
-        error.message = err.message
-        error.status = true
+        return {
+          status: true,
+          message: err.message
+        }
       })
 
-    return error
+    return await error
   }
 }))
 
