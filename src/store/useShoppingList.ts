@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import { type DocumentData, type DocumentReference, setDoc, addDoc, collection } from 'firebase/firestore'
-// import { db } from '../firebase/connection-db'
 import { type ShoppingListItem, type Product } from '../interfaces/type'
-// import { DATA_SEEK } from '../interfaces/constants'
 
 const INITIAL_STATE = {
   amount: 0,
@@ -53,8 +51,8 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     set(({ values }) => ({
       values: {
         ...values,
-        amount: values.products.filter((ele) => ele?.checked === false).reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0),
-        products: values.products.filter((ele) => ele?.checked === false)
+        amount: values.products.filter((ele) => !ele.checked).reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0),
+        products: values.products.filter((ele) => !ele.checked)
       }
     }))
   },
@@ -74,7 +72,6 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       }
     )
       .then(() => {
-        // TODO: uncomment when finished the test
         set({ values: INITIAL_STATE })
         error.message = 'Shopping list create correctly'
       })
