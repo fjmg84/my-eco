@@ -20,6 +20,7 @@ interface ShoppingListState {
   deleteProduct: () => void
   saveProductList: ({ doc }: { doc: DocumentReference<DocumentData, DocumentData> }) => Promise<Response>
   listAllShoppingLists: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<Item[]>
+  listShoppingListByDate: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<any[]>
 
 }
 
@@ -66,7 +67,7 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       {
         date: new Date().getTime(),
         amount,
-        products: get().values
+        products: get().values.products
       }
     )
       .then(() => {
@@ -97,6 +98,15 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
       })
     })
     return responseDate
+  },
+
+  listShoppingListByDate: async ({ collectionRef }) => {
+    const querySnapshot = await getDocs(collectionRef)
+    const listItems: any[] = []
+    querySnapshot.forEach((doc) => {
+      listItems.push(doc.data())
+    })
+    return listItems
   }
 }))
 

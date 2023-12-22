@@ -1,13 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { type ItemsProps } from '../interfaces/type'
 import { theme } from '../interfaces/constants'
+import { type ShoppingListItem } from '../interfaces/type'
 
-export default function ShoppingItemsList ({ item }: { item: ItemsProps }) {
+export default function ShoppingItemsList ({ item }: { item: ShoppingListItem }) {
   const { products, amount } = item
-  const amountFormatted = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(amount)
+
   return (
     <View style={styles.container}>
       {products.map((product, index) => {
@@ -15,7 +12,7 @@ export default function ShoppingItemsList ({ item }: { item: ItemsProps }) {
         const priceFormatted = new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD'
-        }).format(price)
+        }).format(Number(price))
         const bgColor = index % 2 === 0 ? '#ededed' : 'white'
         return (
           <View key={index} style={{ ...styles.box, backgroundColor: bgColor }}>
@@ -38,7 +35,11 @@ export default function ShoppingItemsList ({ item }: { item: ItemsProps }) {
         marginVertical: 10,
         marginHorizontal: 5
       }}>
-        <Text style={styles.amount}>{amountFormatted}</Text>
+        <Text style={styles.amount}>{
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        }).format(amount)}</Text>
       </View>
     </View>
   )
@@ -64,12 +65,12 @@ const styles = StyleSheet.create({
     padding: 10
   },
   text: {
-    color: theme.colors.primary,
+    color: theme.colors.black,
     fontSize: theme.fontsSize.normal
 
   },
   divider: {
-    backgroundColor: theme.colors.secondary,
+    backgroundColor: theme.colors.black,
     height: 1,
     width: '100%',
     marginBottom: 5
