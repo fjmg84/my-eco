@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { doc } from 'firebase/firestore'
-import { db } from '../firebase/connection-db'
 import {
   Pressable,
   Text,
@@ -30,7 +28,7 @@ const INITIAL_VALUES = {
 export default function CreateShoppingScreen () {
   const { userName } = useUserStore()
   const {
-    settings: { limit_amount: limitAmount },
+    settings: { amount_limit: amountLimit },
     updateSettings,
     getSettings
   } = useSettingsStore()
@@ -40,9 +38,6 @@ export default function CreateShoppingScreen () {
     saveProductList,
     addProduct
   } = useShoppingListStore()
-
-  const today = new Date()
-  const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
 
   const [visible, setVisible] = useState(false)
   const [product, setProduct] = useState<Product>(INITIAL_VALUES)
@@ -84,25 +79,24 @@ export default function CreateShoppingScreen () {
 
   // Add shopping list to firebase
   const handleSaveShoppingList =
-    ({ nameSubCollection }: { nameSubCollection: string }) =>
+    ({ userName }: { userName: string }) =>
       async () => {
         if (products.products.length === 0) {
           alert('You must add at least one product')
           return
         }
 
-        const docRef = doc(db, 'shopping', userName, 'list', nameSubCollection)
-        const { message, status } = await saveProductList({ doc: docRef })
+        const { message, status } = await saveProductList({ userName })
 
         if (!status) {
           updateSettings({
-            username: userName,
+            userName,
             settings: {
-              limit_amount: limitAmount - products.amount
+              amount_limit: amountLimit - products.amount
             }
           })
 
-          getSettings({ username: userName })
+          getSettings({ userName })
         }
         alert(message)
       }
@@ -136,7 +130,7 @@ export default function CreateShoppingScreen () {
           <Text style={styles.labelAmount}>amount limit</Text>
           <Text
             style={{
-              color: theme.colors.red,
+              color: theme.colors.color_text_second,
               fontWeight: 'bold',
               fontSize: theme.fontsSize.big
             }}
@@ -144,7 +138,7 @@ export default function CreateShoppingScreen () {
             {new Intl.NumberFormat('en-ES', {
               style: 'currency',
               currency: 'USD'
-            }).format(limitAmount - products.amount)}
+            }).format(amountLimit - products.amount)}
           </Text>
         </View>
       </View>
@@ -169,7 +163,7 @@ export default function CreateShoppingScreen () {
         </Pressable>
         <Pressable
           style={styles.btn}
-          onPress={handleSaveShoppingList({ nameSubCollection })}
+          onPress={handleSaveShoppingList({ userName })}
         >
           <Image source={require('../../assets/upload-data.png')} />
         </Pressable>
@@ -189,26 +183,26 @@ export default function CreateShoppingScreen () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.yellow,
+    backgroundColor: theme.colors.bg_primary,
     padding: 10,
     position: 'relative',
     alignItems: 'center'
   },
   labelAmount: {
-    color: theme.colors.black_light,
+    color: theme.colors.bg_button_primary,
     fontSize: theme.fontsSize.small
   },
   amount: {
     fontSize: theme.fontsSize.big,
     fontWeight: '900',
-    color: theme.colors.black
+    color: theme.colors.bg_button_primary
   },
   row: {
     fontSize: theme.fontsSize.normal,
     paddingVertical: 5
   },
   navbar: {
-    backgroundColor: theme.colors.blue,
+    backgroundColor: theme.colors.bg_button_primary,
     width: '100%',
     height: 71,
     borderRadius: 50,

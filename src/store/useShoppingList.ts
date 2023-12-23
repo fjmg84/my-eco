@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import { type DocumentData, type DocumentReference, setDoc, addDoc, collection, getDocs, type CollectionReference } from 'firebase/firestore'
+import { type DocumentData, setDoc, addDoc, collection, getDocs, type CollectionReference, doc } from 'firebase/firestore'
 import { type ShoppingListItem, type Product } from '../interfaces/type'
 import { type Item } from '../screens/show-shopping-list'
+import { db } from '../firebase/connection-db'
 
 const INITIAL_STATE = {
   amount: 0,
@@ -18,7 +19,7 @@ interface ShoppingListState {
   addProduct: (product: Product) => void
   updateProduct: (product: Product) => void
   deleteProduct: () => void
-  saveProductList: ({ doc }: { doc: DocumentReference<DocumentData, DocumentData> }) => Promise<Response>
+  saveProductList: ({ userName }: { userName: string }) => Promise<Response>
   listAllShoppingLists: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<Item[]>
   listShoppingListByDate: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<any[]>
 
@@ -59,11 +60,14 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     }))
   },
 
-  saveProductList: async ({ doc }) => {
+  saveProductList: async ({ userName }) => {
+    const today = new Date()
+    // const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+    const docRef = doc(db, userName, 'list', today.getFullYear().toString(), today.toLocaleString('default', { month: 'long' }))
     const amount = get().values.products.reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0)
-    await setDoc(doc, {})
+    await setDoc(docRef, {})
     const error = addDoc(
-      collection(doc, 'items'),
+      collection(docRef, today.getDate().toString()),
       {
         date: new Date().getTime(),
         amount,

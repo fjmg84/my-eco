@@ -13,15 +13,15 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
 export default function HomeScreen ({ navigation }: Props) {
   const { userName } = useUserStore()
-  const { settings, getSettings } = useSettingsStore()
+  const { settings: { amount_limit: amountLimit }, getSettings } = useSettingsStore()
 
   useEffect(() => {
-    getSettings({ username: userName })
+    getSettings({ userName })
   }, [])
 
   return (
     <View style={styles.container}>
-      <Header amount={settings.limit_amount}/>
+      <Header amount={amountLimit}/>
 
       <View
         style={{
