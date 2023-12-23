@@ -38,12 +38,11 @@ export const ROUTE_NAME = {
 
 export const theme = {
   colors: {
-    yellow: '#FDE68A',
-    black: '#333',
-    black_light: '#191919',
-    blue: '#4A5889',
-    red: '#B24E4E'
-
+    bg_primary: '#FEF4E2',
+    bg_second: '#DDDDDD', // gray
+    bg_button_primary: '#000',
+    color_text_primary: '#000', // white
+    color_text_second: '#FE4C55' // red
   },
   fontsSize: {
     small: 14,
