@@ -13,7 +13,7 @@ export default function ShoppingItemsList ({ item }: { item: ShoppingListItem })
           style: 'currency',
           currency: 'USD'
         }).format(Number(price))
-        const bgColor = index % 2 === 0 ? '#ededed' : 'white'
+        const bgColor = index % 2 === 0 ? theme.colors.bg_second : '#ededed'
         return (
           <View key={index} style={{ ...styles.box, backgroundColor: bgColor }}>
             <Text style={{ ...styles.text, width: 150, textAlign: 'left' }}>
@@ -30,12 +30,17 @@ export default function ShoppingItemsList ({ item }: { item: ShoppingListItem })
       })}
       <View style={{
         padding: 5,
-        backgroundColor: theme.colors.red,
-        borderRadius: 20,
-        marginVertical: 10,
+        backgroundColor: theme.colors.color_text_second,
+        borderRadius: 50,
+        marginVertical: 15,
         marginHorizontal: 5
       }}>
-        <Text style={styles.amount}>{
+        <Text style={{
+          color: 'white',
+          fontSize: theme.fontsSize.normal,
+          fontWeight: 'bold',
+          paddingHorizontal: 10
+        }}>{
         new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD'
@@ -52,12 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 10
   },
-  amount: {
-    color: 'white',
-    fontSize: theme.fontsSize.normal,
-    fontWeight: 'bold',
-    paddingHorizontal: 10
-  },
   box: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -65,12 +64,12 @@ const styles = StyleSheet.create({
     padding: 10
   },
   text: {
-    color: theme.colors.black,
+    color: theme.colors.color_text_primary,
     fontSize: theme.fontsSize.normal
 
   },
   divider: {
-    backgroundColor: theme.colors.black,
+    backgroundColor: theme.colors.bg_button_primary,
     height: 1,
     width: '100%',
     marginBottom: 5

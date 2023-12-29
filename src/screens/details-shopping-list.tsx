@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { type Key, useEffect, useState } from 'react'
 import { Text, View, StyleSheet, ScrollView, Alert } from 'react-native'
 import { type NativeStackScreenProps } from '@react-navigation/native-stack'
 import {
   type ShoppingListItem,
-  type ListItemsProps,
   type RootStackParamList
 } from '../interfaces/type'
 import { theme } from '../interfaces/constants'
@@ -22,23 +21,20 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
     params: { year, month, day }
   } = route
 
-  console.clear()
-  console.log(items)
-
   useEffect(() => {
     if (year !== null && month !== null && day !== null) {
       detailsShoppingList({ userName, year, month, day })
         .then((response) => {
-          const listItemsOrderByDate = orderArray({
+          const itemsOrderByDate = orderArray({
             arr: response,
             camp: 'date',
             type: '>'
           })
-          const listItemsGroupByDate = groupBy({
-            array: listItemsOrderByDate,
+          const itemsGroupByDate: ShoppingListItem[] = groupBy({
+            array: itemsOrderByDate,
             property: 'date'
           })
-          setItems(listItemsGroupByDate)
+          setItems(itemsGroupByDate)
         })
         .catch((error) => {
           Alert.alert(`${error}`)
@@ -48,7 +44,7 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollview}>
+      <ScrollView style={styles.scroll}>
         <View
           style={{
             width: '100%',
@@ -65,15 +61,18 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
                     style={{
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: theme.colors.bg_second,
-                      paddingVertical: 10
+                      backgroundColor: theme.colors.bg_button_primary,
+                      paddingVertical: 15
                     }}
                   >
-                    <Text style={styles.key}>
+                    <Text style={{
+                      color: 'white',
+                      fontSize: theme.fontsSize.normal
+                    }}>
                       {date.toLocaleString('en-US')}
                     </Text>
                   </View>
-                  {value.map((item, index) => (
+                  {value.map((item: ShoppingListItem, index: Key | null | undefined) => (
                     <ShoppingItemsList key={index} item={item} />
                   ))}
                 </View>
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  scrollview: {
+  scroll: {
     flex: 1,
     width: '100%',
     paddingHorizontal: 20,
@@ -111,9 +110,5 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     width: '100%'
-  },
-  key: {
-    color: 'white',
-    fontSize: theme.fontsSize.small
   }
 })

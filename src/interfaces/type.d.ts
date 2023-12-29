@@ -7,6 +7,7 @@ export interface Product {
 }
 
 export interface ShoppingListItem {
+  [x: string]: any
   date: number
   products: Product[]
   amount: number

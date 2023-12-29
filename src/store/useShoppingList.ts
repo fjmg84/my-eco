@@ -104,7 +104,6 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     const listItems: string[] = []
     const collectionRef = collection(db, userName, 'shopping', 'years')
     const response = await getDocs(collectionRef)
-    console.log('years', listItems)
     response.forEach((value) => {
       listItems.push(value.id)
     })
