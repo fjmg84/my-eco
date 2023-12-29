@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, Alert } from 'react-native'
 import { type NativeStackScreenProps } from '@react-navigation/native-stack'
-
-import { type CollectionReference, type DocumentData, collection } from 'firebase/firestore'
 import {
+  type ShoppingListItem,
   type ListItemsProps,
   type RootStackParamList
 } from '../interfaces/type'
-import { db } from '../firebase/connection-db'
 import { theme } from '../interfaces/constants'
 import { groupBy, orderArray } from '../services/functions'
 import ShoppingItemsList from '../components/shopping-items-list'
@@ -17,36 +15,36 @@ import useShoppingListStore from '../store/useShoppingList'
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailsShoppingList'>
 
 export default function DetailsShoppingListScreen ({ route }: Props) {
-  const [items, setItems] = useState<ListItemsProps>({})
+  const [items, setItems] = useState<ShoppingListItem[]>([])
   const { userName } = useUserStore()
-  const { listShoppingListByDate } = useShoppingListStore()
+  const { detailsShoppingList } = useShoppingListStore()
   const {
-    params: { id }
+    params: { year, month, day }
   } = route
 
+  console.clear()
+  console.log(items)
+
   useEffect(() => {
-    if (id !== null) {
-      const collectionRef = collection(db, 'shopping', userName, 'list', id, 'items')
-      getShoppingListByDate({ collectionRef })
+    if (year !== null && month !== null && day !== null) {
+      detailsShoppingList({ userName, year, month, day })
+        .then((response) => {
+          const listItemsOrderByDate = orderArray({
+            arr: response,
+            camp: 'date',
+            type: '>'
+          })
+          const listItemsGroupByDate = groupBy({
+            array: listItemsOrderByDate,
+            property: 'date'
+          })
+          setItems(listItemsGroupByDate)
+        })
+        .catch((error) => {
+          Alert.alert(`${error}`)
+        })
     }
-  }, [id])
-
-  const getShoppingListByDate = async ({ collectionRef }:
-  { collectionRef: CollectionReference<DocumentData, DocumentData> }) => {
-    const listItems = await listShoppingListByDate({ collectionRef })
-
-    const listItemsOrderByDate = orderArray({
-      arr: listItems,
-      camp: 'date',
-      type: '>'
-    })
-    const listItemsGroupByDate: ListItemsProps = groupBy({
-      array: listItemsOrderByDate,
-      property: 'date'
-    })
-
-    setItems(listItemsGroupByDate)
-  }
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -67,7 +65,7 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
                     style={{
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: theme.colors.blue,
+                      backgroundColor: theme.colors.bg_second,
                       paddingVertical: 10
                     }}
                   >
@@ -90,7 +88,7 @@ export default function DetailsShoppingListScreen ({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.yellow,
+    backgroundColor: theme.colors.bg_primary,
     alignItems: 'center',
     justifyContent: 'center'
   },

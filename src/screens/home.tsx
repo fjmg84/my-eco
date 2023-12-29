@@ -57,7 +57,7 @@ export default function HomeScreen ({ navigation }: Props) {
 
         <CustomButton
           navigation={navigation}
-          route={ROUTE_NAME.SHOW_SHOPPING_LIST}
+          route={ROUTE_NAME.LIST_SHOPPING_LIST_BY_YEARS}
           text="show shopping list"
           stylesButton={styles.btnView}
           stylesText={styles.btnText}

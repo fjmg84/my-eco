@@ -16,9 +16,10 @@ export interface RootStackParamList {
   [key: string]: undefined
   Home: undefined
   CreateShoppingList: undefined
-  ShowShoppingList: undefined
-  DetailsShoppingList: { id: string | null }
-
+  ListShoppingListByYears: undefined
+  ListShoppingListByMonths: { year: string | null }
+  ListShoppingListByDays: { year: string | null, month: string | null }
+  DetailsShoppingList: { year: string | null, month: string | null, day: string | null }
 }
 
 export interface ListItemsProps {

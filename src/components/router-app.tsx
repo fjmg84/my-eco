@@ -3,9 +3,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import { type RootStackParamList } from '../interfaces/type'
 import HomeScreen from '../screens/home'
-import ShowShoppingListScreen from '../screens/show-shopping-list'
 import CreateShoppingListScreen from '../screens/create-shopping-list'
 import DetailsShoppingListScreen from '../screens/details-shopping-list'
+import ListShoppingListByMonthsScreen from '../screens/list-shopping-list-by-months'
+import ListShoppingListByYearsScreen from '../screens/list-shopping-list-by-years'
+import ListShoppingListByDaysScreen from '../screens/list-shopping-list-by-days'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -16,15 +18,20 @@ export default function RouterComponent () {
         <Stack.Screen name="Home" component={HomeScreen} options={{
           title: 'My Shopping List'
         }} />
-        <Stack.Screen name="ShowShoppingList" component={ShowShoppingListScreen}
+        <Stack.Screen name="ListShoppingListByYears" component={ListShoppingListByYearsScreen}
         options={{
-          title: 'Shopping List By Date'
+          title: 'Shopping List By Year'
         }}
         />
-        <Stack.Screen name="CreateShoppingList" component={CreateShoppingListScreen}
-          options={{
-            title: 'Create Shopping List'
-          }}
+        <Stack.Screen name="ListShoppingListByMonths" component={ListShoppingListByMonthsScreen}
+        options={{
+          title: 'Shopping List By Month'
+        }}
+        />
+        <Stack.Screen name="ListShoppingListByDays" component={ListShoppingListByDaysScreen}
+        options={{
+          title: 'Shopping List By Day'
+        }}
         />
         <Stack.Screen
           name="DetailsShoppingList"
@@ -33,6 +40,11 @@ export default function RouterComponent () {
             title: 'Details Shopping List'
           }}
         />
+          <Stack.Screen name="CreateShoppingList" component={CreateShoppingListScreen}
+            options={{
+              title: 'Create Shopping List'
+            }}
+          />
       </Stack.Navigator>
     </NavigationContainer>
   )

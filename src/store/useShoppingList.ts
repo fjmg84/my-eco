@@ -1,7 +1,6 @@
 import { create } from 'zustand'
-import { type DocumentData, setDoc, addDoc, collection, getDocs, type CollectionReference, doc } from 'firebase/firestore'
+import { setDoc, addDoc, collection, getDocs, doc } from 'firebase/firestore'
 import { type ShoppingListItem, type Product } from '../interfaces/type'
-import { type Item } from '../screens/show-shopping-list'
 import { db } from '../firebase/connection-db'
 
 const INITIAL_STATE = {
@@ -14,15 +13,18 @@ interface Response {
   message: string
 }
 
+const TODAY = new Date()
+
 interface ShoppingListState {
   values: ShoppingListItem
   addProduct: (product: Product) => void
   updateProduct: (product: Product) => void
   deleteProduct: () => void
-  saveProductList: ({ userName }: { userName: string }) => Promise<Response>
-  listAllShoppingLists: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<Item[]>
-  listShoppingListByDate: ({ collectionRef }: { collectionRef: CollectionReference<DocumentData, DocumentData> }) => Promise<any[]>
-
+  saveShoppingList: ({ userName }: { userName: string }) => Promise<Response>
+  listShoppingListByYears: ({ userName }: { userName: string }) => Promise<string[]>
+  listShoppingListByMonths: ({ userName, year }: { userName: string, year: string }) => Promise<any[]>
+  listShoppingListByDays: ({ userName, year, month }: { userName: string, year: string, month: string }) => Promise<any[]>
+  detailsShoppingList: ({ userName, year, month, day }: { userName: string, year: string, month: string, day: string }) => Promise<ShoppingListItem[]>
 }
 
 const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
@@ -60,19 +62,26 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     }))
   },
 
-  saveProductList: async ({ userName }) => {
-    const today = new Date()
-    // const nameSubCollection = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
-    const docRef = doc(db, userName, 'list', today.getFullYear().toString(), today.toLocaleString('default', { month: 'long' }))
-    const amount = get().values.products.reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0)
-    await setDoc(docRef, {})
+  saveShoppingList: async ({ userName }) => {
+    const year = `${userName}/shopping/years/${TODAY.getFullYear().toString()}`
+    const month = `/months/${TODAY.toLocaleString('default', { month: 'long' })}`
+    const day = `/days/${TODAY.getDate().toString()}`
+    const yearRef = doc(db, year)
+    await setDoc(yearRef, {})
+    const monthRef = doc(db, `${year}${month}`)
+    await setDoc(monthRef, {})
+    const dayRef = doc(db, `${year}${month}${day}`)
+    await setDoc(dayRef, {})
+
+    const data = {
+      date: new Date().getTime(),
+      amount: get().values.products.reduce((acc, ele) => acc + (Number(ele.price) * ele.quantity), 0),
+      products: get().values.products
+    }
+
     const error = addDoc(
-      collection(docRef, today.getDate().toString()),
-      {
-        date: new Date().getTime(),
-        amount,
-        products: get().values.products
-      }
+      collection(dayRef, 'items'),
+      data
     )
       .then(() => {
         set({ values: INITIAL_STATE })
@@ -91,24 +100,43 @@ const useShoppingListStore = create<ShoppingListState>()((set, get) => ({
     return await error
   },
 
-  listAllShoppingLists: async ({ collectionRef }) => {
-    const responseDate: Item[] = []
+  listShoppingListByYears: async ({ userName }) => {
+    const listItems: string[] = []
+    const collectionRef = collection(db, userName, 'shopping', 'years')
     const response = await getDocs(collectionRef)
+    console.log('years', listItems)
     response.forEach((value) => {
-      const date = new Date(value.id)
-      responseDate.push({
-        item: value.id,
-        date: date.toDateString()
-      })
+      listItems.push(value.id)
     })
-    return responseDate
+    return listItems
   },
 
-  listShoppingListByDate: async ({ collectionRef }) => {
-    const querySnapshot = await getDocs(collectionRef)
-    const listItems: any[] = []
-    querySnapshot.forEach((doc) => {
-      listItems.push(doc.data())
+  listShoppingListByMonths: async ({ userName, year }) => {
+    const listItems: string[] = []
+    const collectionRef = collection(db, `${userName}/shopping/years/${year}/months`)
+    const response = await getDocs(collectionRef)
+    response.forEach((value) => {
+      listItems.push(value.id)
+    })
+    return listItems
+  },
+
+  listShoppingListByDays: async ({ userName, year, month }) => {
+    const listItems: string[] = []
+    const collectionRef = collection(db, userName, 'shopping', 'years', year, 'months', month, 'days')
+    const response = await getDocs(collectionRef)
+    response.forEach((value) => {
+      listItems.push(value.id)
+    })
+    return listItems
+  },
+
+  detailsShoppingList: async ({ userName, year, month, day }) => {
+    const listItems: ShoppingListItem[] = []
+    const collectionRef = collection(db, userName, 'shopping', 'years', year, 'months', month, 'days', day, 'items')
+    const response = await getDocs(collectionRef)
+    response.forEach((doc) => {
+      listItems.push(doc.data() as ShoppingListItem)
     })
     return listItems
   }

@@ -35,7 +35,7 @@ export default function CreateShoppingScreen () {
   const {
     values: products,
     deleteProduct,
-    saveProductList,
+    saveShoppingList,
     addProduct
   } = useShoppingListStore()
 
@@ -86,7 +86,7 @@ export default function CreateShoppingScreen () {
           return
         }
 
-        const { message, status } = await saveProductList({ userName })
+        const { message, status } = await saveShoppingList({ userName })
 
         if (!status) {
           updateSettings({

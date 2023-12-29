@@ -31,7 +31,9 @@ export const DATA_SEEK = {
 export const ROUTE_NAME = {
   HOME: 'Home',
   CREATE_SHOPPING_LIST: 'CreateShoppingList',
-  SHOW_SHOPPING_LIST: 'ShowShoppingList',
+  LIST_SHOPPING_LIST_BY_DAYS: 'ListShoppingListByDays',
+  LIST_SHOPPING_LIST_BY_MONTHS: 'ListShoppingListByMonths',
+  LIST_SHOPPING_LIST_BY_YEARS: 'ListShoppingListByYears',
   DETAILS_SHOPPING_LIST: 'DetailsShoppingList'
 
 }
